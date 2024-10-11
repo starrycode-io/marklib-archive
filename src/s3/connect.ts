@@ -1,4 +1,4 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import { S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
 
 class OSSConnection {
   private static instance: OSSConnection;
@@ -23,22 +23,23 @@ class OSSConnection {
 
   public async connect(): Promise<void> {
     try {
-      const region = process.env.OSS_REGION || 'your-region';
-      const endpoint = process.env.OSS_ENDPOINT || 'https://your-custom-endpoint.com';
-      const accessKeyId = process.env.OSS_ACCESS_KEY_ID || 'your-access-key-id';
-      const secretAccessKey = process.env.OSS_SECRET_ACCESS_KEY || 'your-secret-access-key';
+      const region = process.env.S3_REGION || 'your-region';
+      const endpoint = process.env.S3_ENDPOINT || 'https://your-custom-endpoint.com';
+      const accessKeyId = process.env.S3_ACCESS_KEY_ID || 'your-access-key-id';
+      const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY || 'your-secret-access-key';
 
-      this.client = new S3Client({
+      const config: S3ClientConfig = {
         region: region,
         endpoint: endpoint,
         credentials: {
           accessKeyId: accessKeyId,
           secretAccessKey: secretAccessKey
         },
-      });
-      console.log('Connected to OSS');
+      };
+      this.client = new S3Client(config);
+      console.log('Connected to S3');
     } catch (error) {
-      console.error('Error connecting to OSS:', error);
+      console.error('Error connecting to S3:', error);
       throw error;
     }
   }

@@ -20,6 +20,9 @@ importers:
       '@fastify/sensible':
         specifier: ^6.0.0
         version: 6.0.1
+      '@fastify/type-provider-typebox':
+        specifier: ^5.0.0
+        version: 5.0.0(@sinclair/typebox@0.33.16)
       amqplib:
         specifier: ^0.10.4
         version: 0.10.4
@@ -263,6 +266,11 @@ packages:
   '@fastify/sensible@6.0.1':
     resolution: {integrity: sha512-D0rN0kMeZKP23f4w9MoCI9e4+n7vASFAsGoRNn9bondSbplLeIfR2HcjCbyElAM04jGrPRLi/edyThEPOyC9cQ==}
 
+  '@fastify/type-provider-typebox@5.0.0':
+    resolution: {integrity: sha512-E6D31dfF0l7wLwUji0DIoHlaHzyUCTJV4K0FP+bdibuEj+YVh8QGhwH9MqYi+FoTZRTu+bXaDs+W9kdMImt+Bw==}
+    peerDependencies:
+      '@sinclair/typebox': '>=0.26 <=0.33'
+
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -291,6 +299,9 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@sinclair/typebox@0.33.16':
+    resolution: {integrity: sha512-jsz4f3LxXGh217hJE3MAOB+i3pzgr9wLGUBiCRNWaG/rRcVoS4+dzQok9SeZLtwNdmY44oGYQWlJCjIJxeLKEw==}
 
   '@smithy/abort-controller@3.1.5':
     resolution: {integrity: sha512-DhNPnqTqPoG8aZ5dWkFOgsuY+i0GQ3CI6hMmvCoduNsnU9gUZWZBwGfDQsTTB7NvFPkom1df7jMIJWU90kuXXg==}
@@ -1935,6 +1946,10 @@ snapshots:
       type-is: 1.6.18
       vary: 1.1.2
 
+  '@fastify/type-provider-typebox@5.0.0(@sinclair/typebox@0.33.16)':
+    dependencies:
+      '@sinclair/typebox': 0.33.16
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -1964,6 +1979,8 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@sinclair/typebox@0.33.16': {}
 
   '@smithy/abort-controller@3.1.5':
     dependencies:
