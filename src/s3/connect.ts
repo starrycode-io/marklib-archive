@@ -2,7 +2,7 @@ import { S3Client, S3ClientConfig } from "@aws-sdk/client-s3";
 
 class OSSConnection {
   private static instance: OSSConnection;
-  private client: S3Client;
+  private client: S3Client | null = null;
 
   private constructor() {
   }
@@ -14,9 +14,9 @@ class OSSConnection {
     return OSSConnection.instance;
   }
 
-  public async getClient(): Promise<S3Client> {
+  public getClient(): S3Client {
     if (!this.client) {
-      await this.connect();
+      throw new Error('S3Client not initialized. Call connect() first.');
     }
     return this.client;
   }

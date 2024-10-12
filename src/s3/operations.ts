@@ -12,7 +12,8 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
 
   const connection = OSSConnection.getInstance();
   await connection.connect();
-  await this.client.send(command);
+  const client = connection.getClient()
+  await client.send(command);
   return `https://your-bucket-name.s3.amazonaws.com/${key}`;
 }
 
