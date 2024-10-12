@@ -14,7 +14,7 @@ export async function consumeMessages(queueName: string, callback: (msg: string)
   const connection = MQConnection.getInstance();
   const channel = connection.getChannel();
 
-  await channel.assertQueue(queueName, { durable: false });
+  await channel.assertQueue(queueName, { durable: true });
   console.log(`Waiting for messages from queue ${queueName}`);
 
   channel.consume(queueName, (msg) => {
