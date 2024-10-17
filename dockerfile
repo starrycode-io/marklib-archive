@@ -6,7 +6,7 @@ COPY . .
 RUN pnpm run build:ts
 
 FROM zenika/alpine-chrome:latest
-RUN apk update && apk add --no-cache nodejs npm
+RUN apk add --no-cache nodejs npm
 RUN npm install -g single-file-cli
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
