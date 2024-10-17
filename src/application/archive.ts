@@ -2,7 +2,7 @@ import Fastify from 'fastify'
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { exec } from 'child_process'
 import { promisify } from 'util'
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import { uploadFile } from "../s3/operations";
 
@@ -12,10 +12,13 @@ const fastify = Fastify({
   logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
 
-export async function generateHTML(url: string): Promise<void> {
+export async function generateHTML(id, url: string): Promise<void> {
   try {
+    const tempDir = path.join(__dirname, '../temp')
+    await fs.ensureDir(tempDir)
+
     // Generate a unique filename
-    const filename = `${Date.now()}-${Math.random().toString(36).substring(7)}.html`
+    const filename = id + '.html'
     const outputPath = path.join(__dirname, '../temp', filename)
 
     // Execute single-file-cli
