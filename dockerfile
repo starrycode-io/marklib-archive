@@ -9,6 +9,6 @@ FROM node:20-alpine
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY --from=build /app/dist ./dist
-RUN npm install -g pnpm single-file-cli && pnpm install --prod --frozen-lockfile
+RUN npm install -g pnpm fastify-cli single-file-cli && pnpm install --prod --frozen-lockfile
 EXPOSE 3000
 CMD ["fastify", "start", "-l", "info", "dist/app.js"]
