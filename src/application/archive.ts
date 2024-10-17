@@ -12,7 +12,7 @@ const fastify = Fastify({
   logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
 
-export async function generateHTML(id, url: string): Promise<void> {
+export async function generateHTML(id:string, url: string): Promise<void> {
   try {
     const tempDir = path.join(__dirname, '../temp')
     await fs.ensureDir(tempDir)
