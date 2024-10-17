@@ -22,7 +22,7 @@ export async function generateHTML(id:string, url: string): Promise<void> {
     const outputPath = path.join(__dirname, '../temp', filename)
 
     // Execute single-file-cli
-    await execAsync(`single-file ${url} --output-file="${outputPath}"`)
+    await execAsync(`single-file ${url} "${outputPath}"`)
 
     // Read the generated file
     const fileContent = await fs.promises.readFile(outputPath)
