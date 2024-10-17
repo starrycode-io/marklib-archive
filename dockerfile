@@ -6,6 +6,7 @@ COPY . .
 RUN pnpm run build:ts
 
 FROM node:20-alpine
+RUN apk update && apk add --no-cache chromium
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY --from=build /app/dist ./dist
