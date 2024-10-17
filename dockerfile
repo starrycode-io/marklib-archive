@@ -5,10 +5,7 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build:ts
 
-FROM zenika/alpine-chrome:latest
-USER root
-RUN apk add --no-cache \
-      tini make gcc g++ python3 git nodejs npm yarn
+FROM zenika/alpine-chrome:with-node
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY --from=build /app/dist ./dist
