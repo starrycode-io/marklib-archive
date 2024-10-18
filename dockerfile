@@ -5,7 +5,8 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm run build:ts
 
-FROM node:20-alpine
+FROM node:20-bookworm-slim
+RUN apt update && apt install -y chromium
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 COPY --from=build /app/dist ./dist
