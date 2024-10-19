@@ -8,7 +8,7 @@ const fastify = Fastify({
   logger: true
 }).withTypeProvider<TypeBoxTypeProvider>()
 
-export async function uploadFile(file: Buffer, bucket: string, key: string): Promise<string> {
+export async function uploadFile(file: Buffer, bucket: string, key: string): Promise<void> {
   try {
     const command = new PutObjectCommand({
       Bucket: bucket,
@@ -21,7 +21,6 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
     const client = connection.getClient()
     const response = await client.send(command);
     fastify.log.info(response)
-    return `https://${bucket}.s3.amazonaws.com/${encodeURIComponent(key)}`;
   } catch (error) {
     fastify.log.error('Error uploading file to S3:', error);
     throw new Error(`Failed to upload file to S3: ${(error as Error)?.message || 'Unknown error'}`);

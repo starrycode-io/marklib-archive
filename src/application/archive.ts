@@ -29,12 +29,12 @@ export async function generateHTML(id:string, url: string): Promise<void> {
 
     // Upload to S3 using the provided function
     const bucket = process.env.S3_BUCKET_NAME || 'your-bucket-name'
-    const s3Url = await uploadFile(fileContent, bucket, filename)
+    await uploadFile(fileContent, bucket, filename)
 
     // Delete the temporary file
     await fs.promises.unlink(outputPath)
 
-    fastify.log.info(`Processed ${url} and uploaded to S3. URL: ${s3Url}`)
+    fastify.log.info(`Processed ${url} and uploaded to S3.`)
   } catch (error) {
     fastify.log.error(`Error processing ${url}: ${error}`)
     throw error;
