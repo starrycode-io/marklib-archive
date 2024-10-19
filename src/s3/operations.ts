@@ -23,7 +23,7 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
     return `https://${bucket}.s3.amazonaws.com/${encodeURIComponent(key)}`;
   } catch (error) {
     fastify.log.error('Error uploading file to S3:', error);
-    throw new Error(`Failed to upload file to S3: ${error.message}`);
+    throw new Error(`Failed to upload file to S3: ${(error as Error)?.message || 'Unknown error'}`);
   }
 }
 
