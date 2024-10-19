@@ -37,5 +37,6 @@ export async function generateHTML(id:string, url: string): Promise<void> {
     fastify.log.info(`Processed ${url} and uploaded to S3. URL: ${s3Url}`)
   } catch (error) {
     fastify.log.error(`Error processing ${url}: ${error}`)
+    throw error;
   }
 }
