@@ -19,7 +19,8 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
     const connection = OSSConnection.getInstance();
     await connection.connect();
     const client = connection.getClient()
-    await client.send(command);
+    const response = await client.send(command);
+    fastify.log.info(response)
     return `https://${bucket}.s3.amazonaws.com/${encodeURIComponent(key)}`;
   } catch (error) {
     fastify.log.error('Error uploading file to S3:', error);
