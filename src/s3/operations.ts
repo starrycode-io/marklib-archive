@@ -14,6 +14,7 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
       Bucket: bucket,
       Key: key,
       Body: file,
+      ContentType: 'text/html'
     });
 
     const connection = OSSConnection.getInstance();
