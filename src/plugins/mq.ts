@@ -14,10 +14,10 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
     await connection.connect();
 
     const queueName = 'bookmark_archive';
-    await consumeMessages(queueName, async (message) => {
-      const msg: BookmarkMessage = JSON.parse(message);
+    await consumeMessages(queueName, async (message: string) => {
+      const msgData: BookmarkMessage = JSON.parse(message);
       fastify.log.info(`Received message: ${message}`);
-      await generateHTML(msg.id, msg.url);
+      await generateHTML(msgData.id, msgData.url);
     });
 
   } catch (error) {
