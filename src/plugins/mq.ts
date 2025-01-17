@@ -17,8 +17,14 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
     await consumeMessages(queueName, async (message, ack) => {
       const msg: BookmarkMessage = JSON.parse(message);
       fastify.log.info(`Received message: ${message}`);
-      await generateHTML(msg.id, msg.url);
-      ack();
+
+      try {
+        await generateHTML(msg.id, msg.url);
+        ack();
+      } catch (error) {
+        fastify.log.error(`Error processing message: ${error}`);
+      }
+
     });
 
   } catch (error) {

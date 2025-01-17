@@ -19,12 +19,25 @@ export async function consumeMessages(
 
   await channel.assertQueue(queueName, { durable: true });
   console.log(`Waiting for messages from queue ${queueName}`);
+  
+  await channel.prefetch(1);
+  let isProcessing = false;
 
   channel.consume(queueName, async (msg) => {
-    if (msg !== null) {
+    if (msg === null || isProcessing) return;
+    try {
+      isProcessing = true;
       const content = msg.content.toString();
-      const ack = () => channel.ack(msg);
+      const ack = () => {
+        channel.ack(msg);
+        isProcessing = false;
+      };
+
       await callback(content, ack);
+    } catch (error) {
+      console.error('Error processing message:', error);
+      isProcessing = false;
+      channel.nack(msg);
     }
   }, { noAck: false });
 }
