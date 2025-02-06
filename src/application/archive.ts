@@ -22,7 +22,7 @@ export async function generateHTML(id:string, url: string): Promise<void> {
     const outputPath = path.join(__dirname, '../temp', filename)
 
     // Execute single-file-cli
-    await execAsync(`single-file --browser-executable-path=/usr/bin/chromium --browser-arg="--user-data-dir=./chromium-profile" --browser-arg="--no-sandbox" --browser-arg="--headless" --browser-arg="--load-extension=./uBOLite.chromium.mv3" "${url}" "${outputPath}"`)
+    await execAsync(`single-file --browser-executable-path=/usr/bin/chromium --browser-arg="--user-data-dir=./chromium-profile" --browser-arg="--no-sandbox" --browser-arg="--headless" --browser-arg="--load-extension=./uBOLite.chromium.mv3" --browser-load-max-time=300000 --browser-capture-max-time=300000 "${url}" "${outputPath}"`)
 
     // Read the generated file
     const fileContent = await fs.promises.readFile(outputPath)
