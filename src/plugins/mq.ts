@@ -65,7 +65,7 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
             channel.sendToQueue(queueName, Buffer.from(message), {
               headers: {
                 'x-retry-count': retryCount + 1,
-                'x-error': error.message
+                'x-error': error
               },
               expiration: delay.toString()
             });
@@ -77,7 +77,7 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
             nack(false);
           }
         } else {
-          fastify.log.error(`Message failed after ${maxRetries} retries, moving to DLQ. Final error: ${error.message}`);
+          fastify.log.error(`Message failed after ${maxRetries} retries, moving to DLQ. Final error: ${error}`);
           nack(false);
         }
       }
