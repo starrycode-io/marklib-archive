@@ -34,9 +34,12 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
       }
     });
     
-    await consumeMessages(queueName, async (message, ack, nack) => {
+    await consumeMessages(queueName, async (message, ack, nack, headers) => {
       const msg: BookmarkMessage = JSON.parse(message);
-      fastify.log.info(`Received message: ${message}`);
+      const retryCount = (headers?.['x-retry-count'] as number) || 0;
+      const maxRetries = 3;
+
+      fastify.log.info(`Processing message: ${message}, retry count: ${retryCount}`);
 
       try {
         // 15 Minutes Timeout
@@ -53,7 +56,30 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
         ack();
       } catch (error) {
         fastify.log.error(`Error processing message: ${error}`);
-        nack(false);
+        
+        if (retryCount < maxRetries) {
+          try {
+            const channel = connection.getChannel();
+            const delay = Math.pow(2, retryCount) * 1000;
+            
+            channel.sendToQueue(queueName, Buffer.from(message), {
+              headers: {
+                'x-retry-count': retryCount + 1,
+                'x-error': error.message
+              },
+              expiration: delay.toString()
+            });
+            
+            fastify.log.info(`Message requeued with delay: ${delay}ms`);
+            ack();
+          } catch (publishError) {
+            fastify.log.error(`Failed to publish retry message: ${publishError}`);
+            nack(false);
+          }
+        } else {
+          fastify.log.error(`Message failed after ${maxRetries} retries, moving to DLQ. Final error: ${error.message}`);
+          nack(false);
+        }
       }
     });
 
