@@ -22,7 +22,13 @@ export async function consumeMessages(
   const connection = MQConnection.getInstance();
   const channel = connection.getChannel();
 
-  await channel.assertQueue(queueName, { durable: true });
+  await channel.assertQueue(queueName, { 
+    durable: true,
+    arguments: {
+      'x-dead-letter-exchange': `${queueName}_dlx`,
+      'x-dead-letter-routing-key': ''
+    }
+  });
   console.log(`Waiting for messages from queue ${queueName}`);
   
   await channel.prefetch(1);
