@@ -12,7 +12,11 @@ export async function sendMessage(queueName: string, message: string): Promise<v
 
 export async function consumeMessages(
   queueName: string, 
-  callback: (msg: string, ack: () => void) => Promise<void>
+  callback: (
+    message: string, 
+    ack: () => void, 
+    nack: (requeue?: boolean) => void
+  ) => Promise<void>
 ): Promise<void> {
   const connection = MQConnection.getInstance();
   const channel = connection.getChannel();
@@ -32,8 +36,12 @@ export async function consumeMessages(
         channel.ack(msg);
         isProcessing = false;
       };
+      const nack = (requeue?: boolean) => {
+        channel.nack(msg, requeue);
+        isProcessing = false;
+      };
 
-      await callback(content, ack);
+      await callback(content, ack, nack);
     } catch (error) {
       console.error('Error processing message:', error);
       isProcessing = false;
