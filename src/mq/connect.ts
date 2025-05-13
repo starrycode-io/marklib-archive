@@ -23,12 +23,7 @@ class MQConnection {
       const host = process.env.QUEUE_HOST || 'localhost:5672';
 
       const connectionString = `amqp://${username}:${password}@${host}`;
-      const connectionOptions = {
-        frameMax: 0,
-        heartbeat: 60
-      };
-      
-      this.connection = await amqp.connect(connectionString, connectionOptions);
+      this.connection = await amqp.connect(connectionString);
       console.log('Connected to RabbitMQ');
 
       this.channel = await this.connection.createChannel();
