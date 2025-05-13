@@ -24,9 +24,8 @@ class MQConnection {
 
       const connectionString = `amqp://${username}:${password}@${host}`;
       const connectionOptions = {
-        frameMax: 8192,
-        heartbeat: 60,
-        timeout: 10000,
+        frameMax: 0,
+        heartbeat: 60
       };
       
       this.connection = await amqp.connect(connectionString, connectionOptions);
