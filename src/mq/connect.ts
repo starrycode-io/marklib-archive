@@ -18,12 +18,11 @@ class MQConnection {
 
   public async connect(): Promise<void> {
     try {
-      const username = process.env.MQ_USERNAME || 'guest';
-      const password = process.env.MQ_PASSWORD || 'guest';
-      const host = process.env.MQ_HOST || 'localhost';
-      const port = process.env.MQ_PORT || 5672;
+      const username = process.env.QUEUE_USERNAME || 'guest';
+      const password = process.env.QUEUE_PASSWORD || 'guest';
+      const host = process.env.QUEUE_HOST || 'localhost:5672';
 
-      const connectionString = `amqp://${username}:${password}@${host}:${port}`;
+      const connectionString = `amqp://${username}:${password}@${host}`;
       this.connection = await amqp.connect(connectionString);
       console.log('Connected to RabbitMQ');
 
