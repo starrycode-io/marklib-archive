@@ -11,7 +11,7 @@ WORKDIR /app
 COPY scripts/setup-ublock.sh ./
 RUN bash setup-ublock.sh
 
-FROM node:20-bookworm-slim
+FROM node:20-bookworm
 RUN apt update && \
     apt install -y chromium && \
     mkdir -p chromium-profile
