@@ -16,21 +16,30 @@ class MQConnection {
     return MQConnection.instance;
   }
 
-  public async connect(): Promise<void> {
-    try {
-      const username = process.env.QUEUE_USERNAME || 'guest';
-      const password = process.env.QUEUE_PASSWORD || 'guest';
-      const host = process.env.QUEUE_HOST || 'localhost:5672';
+  public async connect(retries = 5, delay = 5000): Promise<void> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const username = process.env.QUEUE_USERNAME || 'guest';
+        const password = process.env.QUEUE_PASSWORD || 'guest';
+        const host = process.env.QUEUE_HOST || 'localhost:5672';
 
-      const connectionString = `amqp://${username}:${password}@${host}`;
-      this.connection = await amqp.connect(connectionString);
-      console.log('Connected to RabbitMQ');
+        const connectionString = `amqp://${username}:${password}@${host}`;
+        this.connection = await amqp.connect(connectionString);
+        console.log('Connected to RabbitMQ');
 
-      this.channel = await this.connection.createChannel();
-      console.log('Channel created');
-    } catch (error) {
-      console.error('Error connecting to RabbitMQ:', error);
-      throw error;
+        this.channel = await this.connection.createChannel();
+        console.log('Channel created');
+        return;
+      } catch (error) {
+        console.error(`Error connecting to RabbitMQ (attempt ${i + 1}/${retries}):`, error);
+        
+        if (i === retries - 1) {
+          throw error;
+        }
+        
+        console.log(`Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
     }
   }
 
