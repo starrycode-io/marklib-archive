@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
@@ -11,7 +11,7 @@ WORKDIR /app
 COPY scripts/setup-ublock.sh ./
 RUN bash setup-ublock.sh
 
-FROM node:20-bookworm-slim
+FROM node:22-bookworm-slim
 RUN apt update && \
     apt install -y chromium && \
     mkdir -p chromium-profile
