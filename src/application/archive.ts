@@ -5,6 +5,15 @@ import { promisify } from 'util'
 import fs from 'fs-extra'
 import path from 'path'
 import { uploadFile } from "../s3/operations";
+import { sendMessage } from "../mq/operations";
+
+class BookmarkMessage {
+  id: string;
+  
+  constructor(id:string) { 
+        this.id = id
+  }
+}
 
 const execAsync = promisify(exec)
 
@@ -51,6 +60,10 @@ export async function generateHTML(id:string, url: string): Promise<void> {
 
     // Delete the temporary file
     await fs.promises.unlink(outputPath)
+    
+    // Send archive done to MQ
+    var msg = new BookmarkMessage(id)
+    await sendMessage("bookmark_archive_done", JSON.stringify(msg))
 
     fastify.log.info(`Processed ${url} and uploaded to S3.`)
   } catch (error) {
