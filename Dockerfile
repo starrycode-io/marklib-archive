@@ -1,9 +1,9 @@
 FROM node:22-alpine AS build
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN corepack enable && yarn install --immutable
 COPY . .
-RUN pnpm run build:ts
+RUN yarn run build:ts
 
 FROM debian:bookworm-slim AS plugin
 RUN apt update && apt install -y wget curl unzip zip jq
@@ -16,9 +16,9 @@ RUN apt update && \
     apt install -y chromium && \
     mkdir -p chromium-profile
 WORKDIR /app
-COPY package.json pnpm-lock.yaml ./
+COPY package.json yarn.lock .yarnrc.yml ./
 COPY --from=build /app/dist ./dist
 COPY --from=plugin /app/uBOLite.chromium.mv3 ./uBOLite.chromium.mv3
-RUN npm install -g pnpm fastify-cli single-file-cli && pnpm install --prod --frozen-lockfile
+RUN corepack enable && npm install -g fastify-cli single-file-cli && yarn install --immutable --production
 EXPOSE 3000
 CMD ["fastify", "start", "-l", "info", "dist/app.js"]
