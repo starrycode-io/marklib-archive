@@ -3,7 +3,7 @@ import * as amqp from 'amqplib';
 
 class MQConnection {
   private static instance: MQConnection;
-  private connection: amqp.Connection | null = null;
+  private connection: amqp.ChannelModel | null = null;
   private channel: amqp.Channel | null = null;
 
   private constructor() {

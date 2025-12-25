@@ -23,7 +23,7 @@ export async function uploadFile(file: Buffer, bucket: string, key: string): Pro
     const response = await client.send(command);
     fastify.log.info(response)
   } catch (error) {
-    fastify.log.error('Error uploading file to S3:', error);
+    fastify.log.error({ error }, 'Error uploading file to S3:');
     throw new Error(`Failed to upload file to S3: ${(error as Error)?.message || 'Unknown error'}`);
   }
 }
