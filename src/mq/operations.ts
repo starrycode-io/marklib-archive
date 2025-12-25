@@ -32,28 +32,42 @@ export async function consumeMessages(
   console.log(`Waiting for messages from queue ${queueName}`);
   
   await channel.prefetch(1);
-  let isProcessing = false;
 
   channel.consume(queueName, async (msg) => {
-    if (msg === null || isProcessing) return;
-    try {
-      isProcessing = true;
-      const message = msg.content.toString();
-      const headers = msg.properties.headers;
-      const ack = () => {
-        channel.ack(msg);
-        isProcessing = false;
-      };
-      const nack = (requeue: boolean) => {
-        channel.nack(msg, false, requeue);
-        isProcessing = false;
-      };
+    if (msg === null) return;
 
+    const message = msg.content.toString();
+    const headers = msg.properties.headers;
+    let handled = false;
+
+    const ack = () => {
+      if (!handled) {
+        channel.ack(msg);
+        handled = true;
+      }
+    };
+
+    const nack = (requeue: boolean) => {
+      if (!handled) {
+        channel.nack(msg, false, requeue);
+        handled = true;
+      }
+    };
+
+    try {
       await callback(message, ack, nack, headers);
+
+      // If callback didn't call ack/nack, we should nack to avoid message loss
+      if (!handled) {
+        console.warn(`Message was not acknowledged by callback, nacking: ${message}`);
+        nack(false);
+      }
     } catch (error) {
       console.error('Error processing message:', error);
-      isProcessing = false;
-      channel.nack(msg);
+      // Only nack if not already handled
+      if (!handled) {
+        nack(false);
+      }
     }
   }, { noAck: false });
 }

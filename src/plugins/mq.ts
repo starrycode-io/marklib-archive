@@ -42,17 +42,10 @@ const mqPlugin: FastifyPluginAsync = async (fastify, opts) => {
       fastify.log.info(`Processing message: ${message}, retry count: ${retryCount}`);
 
       try {
-        // 15 Minutes Timeout
+        // Timeout is now handled inside generateHTML function
         const timeoutMs = 15 * 60 * 1000;
-        const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Operation timed out')), timeoutMs);
-        });
+        await generateHTML(msg.id, msg.url, { timeout: timeoutMs });
 
-        await Promise.race([
-          generateHTML(msg.id, msg.url),
-          timeoutPromise
-        ]);
-        
         ack();
       } catch (error) {
         fastify.log.error(`Error processing message: ${error}`);
