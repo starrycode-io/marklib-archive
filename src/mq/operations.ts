@@ -5,7 +5,7 @@ export async function sendMessage(queueName: string, message: string): Promise<v
   const connection = MQConnection.getInstance();
   const channel = connection.getChannel();
 
-  await channel.assertQueue(queueName, { durable: false });
+  await channel.assertQueue(queueName, { durable: true });
   channel.sendToQueue(queueName, Buffer.from(message));
   console.log(`Sent message to queue ${queueName}: ${message}`);
 }
